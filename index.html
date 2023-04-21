@@ -1,206 +1,383 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
-		<title>DataHandler</title>
-		<style>
-			#panel-handler #handler_display {
-                    white-space: pre;
-                    max-height: 50%;
-                    overflow: scroll;
-                }
-                
-                #panel-handler #input {
-                    resize: none;
-                    width: 100%;
-                    overflow: scroll;
-                }
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<div class="row clearfix">
-				<div class="col-md-12 column">
-					<nav class="navbar navbar-default" role="navigation">
-						<div class="navbar-header">
-							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-								<span class="sr-only">ZTools</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-							<a class="navbar-brand" href="#panel-home" data-toggle="tab"><i>
-									<font color="red">Z</font>Tools
-								</i></a>
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
+	<title>DataHandler</title>
+	<style>
+		#panel-handler #handler_display {
+			white-space: pre;
+			max-height: 50%;
+			overflow: scroll;
+		}
+
+		#panel-handler #input {
+			resize: none;
+			width: 100%;
+			overflow: scroll;
+		}
+
+		.container {
+			/* display: flex; */
+
+			flex-direction: column;
+			align-items: center;
+			margin-top: 30px;
+			width: 80%;
+			margin-left: 10%;
+		}
+
+		.input-container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-bottom: 10px;
+			width: 100%;
+		}
+
+		textarea {
+			margin-bottom: 10px;
+			width: 100%;
+			resize: both;
+			/* 允许用户调整大小 */
+		}
+
+		.button-container {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 10px;
+			width: 100%;
+		}
+
+		.history-container {
+			width: 100%;
+			margin-top: 20px;
+		}
+
+		.history-item {
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<nav class="navbar navbar-default" role="navigation">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1">
+							<span class="sr-only">ZTools</span><span class="icon-bar"></span><span
+								class="icon-bar"></span><span class="icon-bar"></span></button>
+						<a class="navbar-brand" href="#panel-home" data-toggle="tab"><i>
+								<font color="red">Z</font>Tools
+							</i></a>
+					</div>
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li>
+								<a href="#panel-name" data-toggle="tab">Name Generater</a>
+							</li>
+							<li>
+								<a href="#panel-handler" data-toggle="tab">Data Handler</a>
+							</li>
+							<li>
+								<a href="#panel-replacer" data-toggle="tab">Replacer</a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+				<div class="tabbable" id="content">
+					<div class="tab-content">
+						<div class="tab-pane col-12 active" id="panel-home">
+							<div class="">ZTools</div>
 						</div>
-						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-							<ul class="nav navbar-nav">
-								<li>
-									<a href="#panel-name" data-toggle="tab">Name Generater</a>
-								</li>
-								<li>
-									<a href="#panel-handler" data-toggle="tab">Data Handler</a>
-								</li>
-							</ul>
+						<div class="tab-pane col-12 " id="panel-name">
+							<select class="form-control col-1" id="name_language">
+								<option value='true'>En</option>
+								<option value='false'>Zh_CN</option>
+							</select>
+							<select class="form-control col-1" id="name_gender">
+								<option value='true'>Male</option>
+								<option value='false'>Famale</option>
+							</select>
+							<select class="form-control col-1" id="name_number">
+								<option value='10'>10</option>
+								<option value='20'>20</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
+								<option value='200'>200</option>
+								<option value='500'>500</option>
+								<option value='1000'>1000</option>
+							</select>
+							<button class="btn btn-success" id="name_table_refresh">Refresh</button>
+							<table class="table table-bordered table-hover table-condensed" id="table-name"></table>
 						</div>
-					</nav>
-					<div class="tabbable" id="content">
-						<div class="tab-content">
-							<div class="tab-pane col-12 active" id="panel-home">
-								<div class="">ZTools</div>
+						<div class="tab-pane col-12 " id="panel-handler">
+							<h3 class="text-info text-center">
+								Data Handler
+							</h3>
+							<div class="btn-group">
+								<button class="btn btn-danger" id='clean'>Clean</button>
+								<button class="btn btn-warning" id='submit'>Submit</button>
+								<button class="btn btn-success" id='copy'>Copy</button> <button data-toggle="dropdown"
+									class="btn btn-info dropdown-toggle"><span><b class="caret"></b></span></button>
+								<ul class="dropdown-menu">
+									<li id="toQueryIdSet"><a
+											title='Make a large number of value transform into query able format.'>packageId</a>
+									</li>
+									<li id="toQueryFieldName"><a
+											title='Make rows or columns of field names transform into query able format.'>toQueryFieldName</a>
+									</li>
+									<li id="toTableRow"><a
+											title='Make field names from SOQL transform into a row of table.'>toTableRow</a>
+									</li>
+									<li id="toTableColumn"><a
+											title='Make field names from SOQL transform into a column of table.'>toTableColumn</a>
+									</li>
+									<li id="toSentenceFormate"><a
+											title='Make first words in a sentence transform into first character uppper format.'>toSentenceFormate</a>
+									</li>
+									<li id="toLabelFormate"><a
+											title='Make all words in input transform into first character uppper format.'>toLabelFormate</a>
+									</li>
+									<li id="toFieldsName"><a
+											title='Make field names from API Name transform into a searchable format.'>toFieldsName</a>
+									</li>
+									<li id="toFieldsNameNoSpace"><a
+											title='Make field names from API Name transform into a no space format.'>toFieldsNameNoSpace</a>
+									</li>
+									<li id="toCustomAPI"><a
+											title='Make field names from API Name transform into a query format.'>toCustomAPI</a>
+									</li>
+									<li id="toCsvTable"><a
+											title='Make a pure excel table transform into csv fromat'>toCsvTable</a>
+									</li>
+									<li id="toLower"><a title='Transform to lower case'>toLower</a></li>
+									<li id="toUpper"><a title='Transform to upper case'>toUpper</a></li>
+								</ul>
 							</div>
-							<div class="tab-pane col-12 " id="panel-name">
-								<select class="form-control col-1" id="name_language">
-									<option value='true'>En</option>
-									<option value='false'>Zh_CN</option>
-								</select>
-								<select class="form-control col-1" id="name_gender">
-									<option value='true'>Male</option>
-									<option value='false'>Famale</option>
-								</select>
-								<select class="form-control col-1" id="name_number">
-									<option value='10'>10</option>
-									<option value='20'>20</option>
-									<option value='50'>50</option>
-									<option value='100'>100</option>
-									<option value='200'>200</option>
-									<option value='500'>500</option>
-									<option value='1000'>1000</option>
-								</select>
-								<button class="btn btn-success" id="name_table_refresh">Refresh</button>
-								<table class="table table-bordered table-hover table-condensed" id="table-name"></table>
-							</div>
-							<div class="tab-pane col-12 " id="panel-handler">
-								<h3 class="text-info text-center">
-									Data Handler
-								</h3>
-								<div class="btn-group">
-									<button class="btn btn-danger" id='clean'>Clean</button>
-									<button class="btn btn-warning" id='submit'>Submit</button>
-									<button class="btn btn-success" id='copy'>Copy</button> <button data-toggle="dropdown" class="btn btn-info dropdown-toggle"><span><b
-											 class="caret"></b></span></button>
-									<ul class="dropdown-menu">
-										<li id="toQueryIdSet"><a title='Make a large number of value transform into query able format.'>packageId</a></li>
-										<li id="toQueryFieldName"><a title='Make rows or columns of field names transform into query able format.'>toQueryFieldName</a></li>
-										<li id="toTableRow"><a title='Make field names from SOQL transform into a row of table.'>toTableRow</a></li>
-										<li id="toTableColumn"><a title='Make field names from SOQL transform into a column of table.'>toTableColumn</a></li>
-										<li id="toSentenceFormate"><a title='Make first words in a sentence transform into first character uppper format.'>toSentenceFormate</a></li>
-										<li id="toLabelFormate"><a title='Make all words in input transform into first character uppper format.'>toLabelFormate</a></li>
-										<li id="toFieldsName"><a title='Make field names from API Name transform into a searchable format.'>toFieldsName</a></li>
-										<li id="toFieldsNameNoSpace"><a title='Make field names from API Name transform into a no space format.'>toFieldsNameNoSpace</a></li>
-										<li id="toCustomAPI"><a title='Make field names from API Name transform into a query format.'>toCustomAPI</a></li>
-										<li id="toCsvTable"><a title='Make a pure excel table transform into csv fromat'>toCsvTable</a></li>
-										<li id="toLower"><a title='Transform to lower case'>toLower</a></li>
-										<li id="toUpper"><a title='Transform to upper case'>toUpper</a></li>
-									</ul>
+							<textarea class="form-control block" id="handler_input" rows="10"></textarea>
+							<span class="label label-info">Display</span>
+							<div class="jumbotron well block" id="handler_display"></div>
+						</div>
+
+						<div class="tab-pane col-12 " id="panel-replacer">
+							<div class="container">
+								<div class="input-container">
+									<textarea id="originalText" rows="4" placeholder="请输入原始文本"></textarea>
+									<div class="button-container">
+										<button id="pasteOriginal">粘贴</button>
+										<button id="copyOriginal">复制</button>
+									</div>
 								</div>
-								<textarea class="form-control block" id="handler_input" rows="10"></textarea>
-								<span class="label label-info">Display</span>
-								<div class="jumbotron well block" id="handler_display"></div>
+								<div class="input-container">
+									<textarea id="textToReplace" rows="4" placeholder="请输入被替换文本"></textarea>
+									<div class="button-container">
+										<button id="pasteToReplace">粘贴</button>
+										<button id="copyToReplace">复制</button>
+									</div>
+								</div>
+								<div class="input-container">
+									<textarea id="replacementText" rows="4" placeholder="请输入替换文本"></textarea>
+									<div class="button-container">
+										<button id="pasteReplacement">粘贴</button>
+										<button id="copyReplacement">复制</button>
+									</div>
+								</div>
+								<div class="input-container">
+									<textarea id="outputText" rows="4" placeholder="替换后的文本" readonly></textarea>
+									<div class="button-container">
+										<button id="replaceButton">替换</button>
+										<button id="copyOutput">复制</button>
+										<button id="clearButton">清空</button>
+									</div>
+								</div>
+							</div>
+							<div class="history-container">
+								<h3>历史记录</h3>
+								<div id="historyList"></div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
 		</div>
-	</body>
-	<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
-	<script type="text/javascript" charset="UTF-8" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="js/z.js"></script>
-	<script type="text/javascript" charset="utf-8" src="js/randomName.js"></script>
-	<script type="text/javascript" charset="utf-8">
-		;
-		let tmp = null;
-		let result = null;
+	</div>
+</body>
+<script type="text/javascript" charset="utf-8" src="js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" charset="UTF-8" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/z.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/randomName.js"></script>
+<script type="text/javascript" charset="utf-8">
+	;
+	let tmp = null;
+	let result = null;
 
-		$(document).ready(function() {
-			$('#name_table_refresh').click(function() {
-				let target = $('#table-name');
-				let language = $('#name_language').val() == "false" ? false : true;
-				let gander_m = $('#name_gender').val() == "false" ? false : true;
-				let number = $('#name_number').val();
-				let result = null;
-				if (language) {
-					result = z.getRandomNameArrayEnF(number, gander_m);
-				} else {
-					result = z.getRandomNameArray(number, gander_m);
-				}
-				let tmp = '';
-				for (let i = 0; i < result.length; i++) {
-					tmp = tmp.concat('<tr><td>' + result[i][0] + '</td><td>' + result[i][1] + '</td></tr>');
-				}
-				tmp = ''.concat('<thead><tr><td>Last Name</td><td>First Name</td></tr></thead><tbody>'.concat(tmp).concat(
-					'</tbody>'));
-				target.html(tmp);
-			});
-			$('li').click(function() {
-				tmp = $('#handler_input').val();
-			});
-			$('[id*="submit"]').click(function() {
-				$('#handler_input').val(result);
-			});
-			$('[id*="clean"]').click(function() {
-				tmp = '';
-				result = '';
-				$('#handler_input').val('');
-			});
-			$('[id*="copy"]').click(function() {
-				z.string.setClipBoard($('#handler_input'));
-			});
-			$('[id*="toQueryIdSet"]').click(function() {
-				result = z.string.surroundEachRows(tmp, '\'', '\',',false,false);
-			});
-			$('[id*="toQueryFieldName"]').click(function() {
-				result = z.string.replaceForSQL(tmp);
-			});
-			$('[id*="toTableRow"]').click(function() {
-				result = z.string.replaceForTable(tmp);
-			});
-			$('[id*="toTableColumn"]').click(function() {
-				result = z.string.replaceForTable(tmp, 1);
-			});
-			$('[id*="toSentenceFormate"]').click(function() {
-				tmp = tmp.split('\n');
-				result = z.string.concatArray(tmp, '\n', false, true, function(str) {
-					return z.string.formatSentence(str);
-				});
-			});
-			$('[id*="toLabelFormate"]').click(function() {
-				tmp = tmp.split('\n');
-				result = z.string.concatArray(tmp, '\n', false, true, function(str) {
-					return z.string.formatLabel(str);
-				});
-			});
-			$('[id*="toFieldsName"]').click(function() {
-				tmp = tmp.split('\n');
-				result = z.string.concatArray(tmp, '\n', false, true, function(str) {
-					return z.string.toFieldsName(str);
-				});
-			});
-			$('[id*="toFieldsNameNoSpace"]').click(function() {
-				tmp = tmp.split('\n');
-				result = z.string.concatArray(tmp, '\n', false, true, function(str) {
-					z.string.drop(str,' ')
-				});
-			});
-			$('[id*="toCustomAPI"]').click(function() {
-				tmp = tmp.split('\n');
-				z.log(tmp)
-				result = z.string.concatArray(tmp, '\n', false, true, function(str) {
-					return z.string.toCustomObjecAPIName(str);
-				});
-				z.log(result)
-			});
-			$('[id*="toCsvTable"]').click(function() {
-				result = z.string.packageTable(tmp);
-			})
-			$('[id*="toLower"]').click(function() {
-				result = tmp.toLocaleLowerCase();
-			})
-			$('[id*="toUpper"]').click(function() {
-				result = tmp.toLocaleUpperCase();
-			})
-			$('li').click(function() {
-				$('#handler_display').html(result);
+	$(document).ready(function () {
+		$('#name_table_refresh').click(function () {
+			let target = $('#table-name');
+			let language = $('#name_language').val() == "false" ? false : true;
+			let gander_m = $('#name_gender').val() == "false" ? false : true;
+			let number = $('#name_number').val();
+			let result = null;
+			if (language) {
+				result = z.getRandomNameArrayEnF(number, gander_m);
+			} else {
+				result = z.getRandomNameArray(number, gander_m);
+			}
+			let tmp = '';
+			for (let i = 0; i < result.length; i++) {
+				tmp = tmp.concat('<tr><td>' + result[i][0] + '</td><td>' + result[i][1] + '</td></tr>');
+			}
+			tmp = ''.concat('<thead><tr><td>Last Name</td><td>First Name</td></tr></thead><tbody>'.concat(tmp).concat(
+				'</tbody>'));
+			target.html(tmp);
+		});
+		$('li').click(function () {
+			tmp = $('#handler_input').val();
+		});
+		$('[id*="submit"]').click(function () {
+			$('#handler_input').val(result);
+		});
+		$('[id*="clean"]').click(function () {
+			tmp = '';
+			result = '';
+			$('#handler_input').val('');
+		});
+		$('[id*="copy"]').click(function () {
+			z.string.setClipBoard($('#handler_input'));
+		});
+		$('[id*="toQueryIdSet"]').click(function () {
+			result = z.string.surroundEachRows(tmp, '\'', '\',', false, false);
+		});
+		$('[id*="toQueryFieldName"]').click(function () {
+			result = z.string.replaceForSQL(tmp);
+		});
+		$('[id*="toTableRow"]').click(function () {
+			result = z.string.replaceForTable(tmp);
+		});
+		$('[id*="toTableColumn"]').click(function () {
+			result = z.string.replaceForTable(tmp, 1);
+		});
+		$('[id*="toSentenceFormate"]').click(function () {
+			tmp = tmp.split('\n');
+			result = z.string.concatArray(tmp, '\n', false, true, function (str) {
+				return z.string.formatSentence(str);
 			});
 		});
-	</script>
+		$('[id*="toLabelFormate"]').click(function () {
+			tmp = tmp.split('\n');
+			result = z.string.concatArray(tmp, '\n', false, true, function (str) {
+				return z.string.formatLabel(str);
+			});
+		});
+		$('[id*="toFieldsName"]').click(function () {
+			tmp = tmp.split('\n');
+			result = z.string.concatArray(tmp, '\n', false, true, function (str) {
+				return z.string.toFieldsName(str);
+			});
+		});
+		$('[id*="toFieldsNameNoSpace"]').click(function () {
+			tmp = tmp.split('\n');
+			result = z.string.concatArray(tmp, '\n', false, true, function (str) {
+				z.string.drop(str, ' ')
+			});
+		});
+		$('[id*="toCustomAPI"]').click(function () {
+			tmp = tmp.split('\n');
+			z.log(tmp)
+			result = z.string.concatArray(tmp, '\n', false, true, function (str) {
+				return z.string.toCustomObjecAPIName(str);
+			});
+			z.log(result)
+		});
+		$('[id*="toCsvTable"]').click(function () {
+			result = z.string.packageTable(tmp);
+		})
+		$('[id*="toLower"]').click(function () {
+			result = tmp.toLocaleLowerCase();
+		})
+		$('[id*="toUpper"]').click(function () {
+			result = tmp.toLocaleUpperCase();
+		})
+		$('li').click(function () {
+			$('#handler_display').html(result);
+		});
+	});
+</script>
+
+<script>
+	document.getElementById('replaceButton').addEventListener('click', () => {
+		const originalText = document.getElementById('originalText').value;
+		const textToReplace = document.getElementById('textToReplace').value;
+		const replacementText = document.getElementById('replacementText').value;
+
+		const outputText = originalText.split(textToReplace).join(replacementText);
+		document.getElementById('outputText').value = outputText;
+
+		updateHistory(originalText, textToReplace, replacementText, outputText);
+	});
+
+	document.getElementById('clearButton').addEventListener('click', () => {
+		document.getElementById('originalText').value = '';
+		document.getElementById('textToReplace').value = '';
+		document.getElementById('replacementText').value = '';
+		document.getElementById('outputText').value = '';
+	});
+
+	async function copyToClipboard(elementId) {
+		const text = document.getElementById(elementId).value;
+		await navigator.clipboard.writeText(text);
+		alert('已复制到剪贴板');
+	}
+
+	document.getElementById('copyOriginal').addEventListener('click', () => copyToClipboard('originalText'));
+	document.getElementById('copyToReplace').addEventListener('click', () => copyToClipboard('textToReplace'));
+	document.getElementById('copyReplacement').addEventListener('click', () => copyToClipboard('replacementText'));
+	document.getElementById('copyOutput').addEventListener('click', () => copyToClipboard('outputText'));
+
+	document.getElementById('pasteOriginal').addEventListener('click', () => pasteClipboard('originalText'));
+	document.getElementById('pasteToReplace').addEventListener('click', () => pasteClipboard('textToReplace'));
+	document.getElementById('pasteReplacement').addEventListener('click', () => pasteClipboard('replacementText'));
+
+	async function pasteClipboard(elementId) {
+		try {
+			const text = await navigator.clipboard.readText();
+			document.getElementById(elementId).value = text;
+		} catch (err) {
+			console.error('无法粘贴文本: ', err);
+			alert('无法粘贴文本，请检查您的剪贴板或浏览器权限设置。');
+		}
+	}
+
+	function updateHistory(originalText, textToReplace, replacementText, outputText) {
+		const historyList = document.getElementById('historyList');
+		const newItem = document.createElement('div');
+		newItem.className = 'history-item';
+
+		const timestamp = new Date().toLocaleString();
+		newItem.innerHTML = `<strong>替换时间:</strong> ${timestamp}<br>
+                                    <strong>原始文本:</strong> ${originalText}<br>
+                                    <strong>被替换文本:</strong> ${textToReplace}<br>
+                                    <strong>替换文本:</strong> ${replacementText}<br>
+                                    <strong>替换后的文本:</strong> ${outputText}<br>
+                                    <button class="restore-button">还原</button>`;
+
+		historyList.prepend(newItem);
+
+		newItem.querySelector('.restore-button').addEventListener('click', () => {
+			document.getElementById('originalText').value = originalText;
+			document.getElementById('textToReplace').value = textToReplace;
+			document.getElementById('replacementText').value = replacementText;
+			document.getElementById('outputText').value = outputText;
+		});
+	}
+</script>
+
+
 </html>
